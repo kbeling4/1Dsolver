@@ -8,7 +8,8 @@ namespace cell
 
   auto solve_left = [](auto&& mat, auto&& ord, auto&& delX, auto&& phi_p, auto&& q){
 		      auto factor = mat.Sig_t*delX/(2*std::abs(ord));
-		      return (phi_p + delX/(2*std::abs(ord))*q)/(1 + factor);
+		      auto res = (phi_p + delX/(2*std::abs(ord))*q)/(1 + factor);
+		      return res;
 		    };
 
   auto get_phi_m = [](auto&& phi_c, auto&& phi_p){

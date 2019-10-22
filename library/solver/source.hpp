@@ -31,23 +31,26 @@ auto compute_cell_source(M&& mat, O&& ord, A&& angle_flux, N mu_n, I i){
   return scatter + fission;
 };
 
-template<typename S, typename N>
-auto compute_source(S&& func, N&& Nx){
-  std::vector<double> source(Nx, 0.0);
-  for( int i = 0; i < Nx; ++i ){
-    source[i] = func(i);
+template<typename S, typename N, typename O>
+auto compute_source(S&& func, N&& Nx, O&& ord){
+  std::vector< std::vector<double>> source(ord.size(), std::vector<double> (Nx, 0.0));
+  for( int n = 0; n < ord.size(); ++n ){
+    for( int i = 0; i < Nx; ++i ){
+      source[n][i] = func(i, ord[n].value)/2;
+    }
   }
   return source;
 };
 
-template<typename M, typename O, typename A, typename F>
-auto compute_right(M&& mat, O&& ord, A&& angle_flux, F&& func){
+template<typename A, typename O, typename F, typename M, typename R>
+auto compute_right(R&& right, A&& angle_flux, O&& ord, F&& func, M mat){
   double Sn = ord.size();
-  auto Nx = angle[0].size();
-  std::vector< std::vector<double> > right(Sn, std::vector<double> (Nx, 0.0) );
+  auto Nx = angle_flux[0].size();
+  auto source = compute_source(func, Nx, ord);
+
   for( int n = 0; n < Sn; ++n ){
     for( int i = 0; i < Nx; ++i ){
-      right[n][i] = compute_cell_source(mat, ord, angle_flux, ord[n].value, i);
+      right[n][i] = compute_cell_source(mat, ord, angle_flux, ord[n].value, i) + source[n][i];
     }
   }
   return right;

@@ -5,6 +5,8 @@
 #include <vector>
 #include <cmath>
 #include <algorithm>
+#include <type_traits>
+#include <string>
 
 namespace solver{
 
@@ -12,6 +14,7 @@ namespace solver{
 #include "solver/ordinates.hpp"
 #include "solver/sweeper.hpp"
 #include "solver/source.hpp"
+#include "solver/boundary.hpp"
   
 }
 
