@@ -2,6 +2,7 @@
 #define SOLVER_HPP
 
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <cmath>
 #include <algorithm>
@@ -15,6 +16,8 @@ namespace solver{
 #include "solver/sweeper.hpp"
 #include "solver/source.hpp"
 #include "solver/boundary.hpp"
+#include "solver/print.hpp"
+#include "solver/error.hpp"
   
 }
 
