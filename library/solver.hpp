@@ -9,6 +9,8 @@
 #include <type_traits>
 #include <string>
 
+#include <boost/python.hpp>
+
 namespace solver{
 
 #include "solver/grid.hpp"

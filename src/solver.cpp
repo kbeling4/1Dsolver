@@ -27,10 +27,8 @@ int main(){
   std::vector< std::vector<double> > angle_flux_b( Sn, std::vector<double> (Nx+1, 0.0) );
   std::vector< std::vector<double> > right(Sn, std::vector<double> (Nx, 0.0) );
 
-
   std::string type ("isotropic");
-  solver::make_boundary(type, ord, angle_flux_b);
-  
+  solver::make_boundary(type, ord, angle_flux_b);  
 
   for( int i = 0; i < 100; ++i){
     solver::compute_right(right, angle_flux_c, ord, source, mat1);
