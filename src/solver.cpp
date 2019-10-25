@@ -1,20 +1,24 @@
 #include "solver.hpp"
 
-unsigned int Nx = 100;
-double Xmin = 0.0;
-double Xmax = 100.0;
-int Sn = 8;
+// Global Constants
+unsigned int Nx = 400;
+double Xmin  = 0.0;
+double Xmax  = 2.0;
+double alpha = 0.5;
+int Sn = 16;
 unsigned int l = 1;
-double tol = 1e-8;
+double tol = 1e-10;
 
 
 // Nuclear Data
 struct material1{
-  double Sig_t = 1.0; // cm^-1
-  std::vector<double> Sig_s{0.99}; // cm^-1
+  double Sig_t = 2.0; // cm^-1
+  std::vector<double> Sig_s{1.0}; // cm^-1
+  double Sig_a = Sig_t - Sig_s[0];
   double nuSig_f = 0.0;
 };
 
+// Source Function
 auto source = [](auto&& x, auto&& mu){ return 0.0*x + 0.0*mu; };
 
 
@@ -39,7 +43,7 @@ int main(){
   solver::make_boundary(type_l, ord, angle_flux_b);
 
   // Right current boundary condition
-  std::string type_r ("vacuum_r");
+  std::string type_r ("isotropic_r");
   solver::make_boundary(type_r, ord, angle_flux_b);
 
   // Iteration loop
@@ -47,7 +51,7 @@ int main(){
   for( int i = 0; i < 1e5; ++i){
     solver::compute_scalar_flux(scalar_m, angle_flux_c, ord);
     solver::compute_right(right, angle_flux_c, ord, source, mat1);
-    solver::sweep(mat1, angle_flux_c, angle_flux_b, right, ord, bon);
+    solver::sweep(mat1, angle_flux_c, angle_flux_b, right, ord, bon, alpha);
     solver::compute_scalar_flux(scalar_p, angle_flux_c, ord);
     double err = solver::compute_error(scalar_p, scalar_m);
     it += 1;
@@ -56,23 +60,14 @@ int main(){
     }
   }
 
+
+  // Get particle balance
+  auto bal = solver::get_balance(scalar_p, angle_flux_b, ord, bon, mat1);
+
+  std::cout << "Solver Complete \n";
+  std::cout << "- number of iterations: " << it << "\n";
+  std::cout << "- particle balance: " << bal << "\n";
+
   solver::printScalar(scalar_p, "scalar.txt");
-  solver::printX(cen);
-  
-  std::cout << it << std::endl;
-
-  // for( auto row : angle_flux_b ){
-  //   for( auto ele : row ){
-  //     std::cout << ele << " ";
-  //   }
-  //   std::cout << std::endl;
-  // }
-  
-  std::cout << scalar_p[0] << std::endl;
-
-
-  // std::cout << "--------------" << std::endl;
-  // for( auto thing : cen ){
-  //   std::cout << thing << std::endl;
-  // }  
+  solver::printX(cen);  
 }

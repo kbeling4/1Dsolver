@@ -20,7 +20,7 @@ void isotropic_l(O&& ord, A&& angle_b){
   }
   for( unsigned int n = 0; n < ord.size(); ++n ){
     if( n >= static_cast<unsigned int>(ord.size()/2) ){
-      angle_b[n][0] = 1/sum/2;
+      angle_b[n][0] = 1/sum;
     }
   }
 }

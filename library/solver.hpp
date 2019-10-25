@@ -19,6 +19,7 @@ namespace solver{
 #include "solver/print.hpp"
 #include "solver/flux.hpp"
 #include "solver/error.hpp"
+#include "solver/balance.hpp"
   
 }
 
