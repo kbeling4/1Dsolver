@@ -34,8 +34,8 @@ std::vector<double> linspace(double x_start, double x_fin, int x_len) {
 	return arr_x;
 }
 
-template<typename O, typename L, typename U>
-auto get_ordinates(O order, L intv_a, U intv_b) {
+template<typename L, typename U>
+auto get_ordinates(int order, L intv_a, U intv_b) {
   int order_place, order_one, order_two;
   double error, y_const = 2.0;
   std::vector<double> x_space(order), y_space(order), y_hold(order), prime(order);

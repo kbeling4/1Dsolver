@@ -1,17 +1,9 @@
 namespace legendre
 {
-  // n = 0
-  auto P0 = [](auto&& x){ return 1.0; };
-
-  // n = 1
+  auto P0 = [](auto&& x){ return 1.0 + 0.0*x; };
   auto P1 = [](auto&& x){ return x; };
-
-  // n = 2
   auto P2 = [](auto&& x){ return (3.0*x*x - 1.0)*0.5; };
 
-/*
- *	Pn(x)
- */
   template<typename T>
   auto Pn(unsigned int n, const T& x)
   {
