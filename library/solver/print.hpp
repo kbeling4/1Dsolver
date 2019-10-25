@@ -20,6 +20,18 @@ auto printMU = [](auto&& ord){
 		 myfile.close();
 	       }; 
 
+auto printScalar = [](auto&& flux, auto&& name){
+		     std::ofstream myfile (name);
+		     if( myfile.is_open() )
+		       {
+			 for( auto&& val : flux ){
+			   myfile << val << " ";
+			 }
+			 myfile << "\n";
+		       }
+		     myfile.close();
+		   };  
+
 auto printFlux = [](auto&& flux, auto&& name){
 		   std::ofstream myfile (name);
 		   if( myfile.is_open() )
@@ -33,4 +45,3 @@ auto printFlux = [](auto&& flux, auto&& name){
 		     }
 		   myfile.close();
 		 };
-

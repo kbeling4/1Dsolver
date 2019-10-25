@@ -2,8 +2,8 @@
 
 unsigned int Nx = 100;
 double Xmin = 0.0;
-double Xmax = 2.0;
-int Sn = 16;
+double Xmax = 100.0;
+int Sn = 8;
 unsigned int l = 1;
 double tol = 1e-8;
 
@@ -11,7 +11,7 @@ double tol = 1e-8;
 // Nuclear Data
 struct material1{
   double Sig_t = 1.0; // cm^-1
-  std::vector<double> Sig_s{0.95}; // cm^-1
+  std::vector<double> Sig_s{0.99}; // cm^-1
   double nuSig_f = 0.0;
 };
 
@@ -56,6 +56,9 @@ int main(){
     }
   }
 
+  solver::printScalar(scalar_p, "scalar.txt");
+  solver::printX(cen);
+  
   std::cout << it << std::endl;
 
   // for( auto row : angle_flux_b ){
