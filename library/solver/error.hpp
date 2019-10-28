@@ -1,5 +1,5 @@
 template<typename T>
-auto compute_error(T&& scalar_p, T&& scalar_m){
+double compute_error(T&& scalar_p, T&& scalar_m){
   unsigned int Nx = scalar_p.size();
   std::vector<double> error(Nx, 0.0);
   for( unsigned int i = 0; i < Nx; ++i ){

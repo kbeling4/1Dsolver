@@ -15,5 +15,9 @@ for val in scalar:
     y1.append(val)
 
 plt.plot(x1, y1, label='scalar')
+plt.xlabel('position (cm)')
+plt.ylabel('scalar flux (1/cm^2)')
+plt.title('Scalar flux vs position')
+plt.grid()
 
 plt.show()

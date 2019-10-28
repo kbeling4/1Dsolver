@@ -3,6 +3,7 @@ auto get_abs = [](auto&& scalar, auto&& mat, auto&& grid_b){
 		 for( unsigned int i = 0; i < scalar.size(); ++i ){
 		   abs += mat.Sig_a*scalar[i]*(grid_b[i+1] - grid_b[i]);
 		 }
+		 std::cout << "Absorption: " << abs << std::endl;
 		 return abs;
 	       };
 
@@ -16,6 +17,8 @@ auto left_leak = [](auto&& angle_b, auto&& ord){
 		       plus += ord[n].weight*ord[n].value*angle_b[n][0];
 		     }
 		   }
+		   std::cout << "Leakage left: " << minus << std::endl;
+		   // std::cout << "Left in:  " << minus << std::endl;
 		   return plus - minus;
 		 };
 
@@ -30,6 +33,8 @@ auto right_leak = [](auto&& angle_b, auto&& ord){
 			plus += ord[n].weight*ord[n].value*angle_b[n][Nx-1];
 		      }
 		    }
+		    std::cout << "Leakage right: " << plus << std::endl;
+		    // std::cout << "Right in:  " << minus << std::endl;
 		    return plus - minus;
 		  };
 
