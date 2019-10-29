@@ -1,20 +1,25 @@
 template<typename O, typename A>
-void make_boundary(std::string type, O&& ord, A&& angle_b, double gamma = 1.0){
-  if(type == "isotropic_l"){
+void make_boundary_l(std::string type, O&& ord, A&& angle_b, double gamma = 1.0){
+  if(type == "isotropic"){
     isotropic_l(ord, angle_b);
-  } else if (type == "beam_l"){
+  } else if (type == "beam"){
     beam_l(ord, angle_b);
-  } else if (type == "vacuum_l"){
+  } else if (type == "vacuum"){
     vacuum_l(ord, angle_b);
-  } else if (type == "albedo_l"){
+  } else if (type == "albedo"){
     albedo_l(ord, angle_b, gamma);
-  } else if (type == "isotropic_r") {
+  }
+}
+
+template<typename O, typename A>
+void make_boundary_r(std::string type, O&& ord, A&& angle_b, double gamma = 1.0){
+  if (type == "isotropic") {
     isotropic_r(ord, angle_b);
-  } else if (type == "beam_r"){
+  } else if (type == "beam"){
     beam_r(ord, angle_b);
-  } else if (type == "vacuum_r"){
+  } else if (type == "vacuum"){
     vacuum_r(ord, angle_b);
-  } else if (type == "albedo_r"){
+  } else if (type == "albedo"){
     albedo_r(ord, angle_b, gamma);
   }
 }
