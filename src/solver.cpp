@@ -1,30 +1,31 @@
+
 #include "solver.hpp"
 
 // Global Constants
-unsigned int Nx = 100;
+unsigned int Nx = 1e2;
 double Xmin  = 0.0;
-double Xmax  = 5.0;
+double Xmax  = 10.0;
 double alpha = 0.5;
 int Sn = 8;
 unsigned int l = 1; // Scattering order
 double tol = 1e-6;
 
 // Left current boundary condition
-std::string type_l ("beam");
+std::string type_l ("vacuum");
 
 // Right current boundary condition
 std::string type_r ("vacuum");
 
 // Nuclear Data
 struct Material{
-  double Sig_t = 1.0; // cm^-1
-  std::vector<double> Sig_s{0.50}; // cm^-1
+  double Sig_t = 4.0; // cm^-1
+  std::vector<double> Sig_s{0.99}; // cm^-1
   double Sig_a = Sig_t - Sig_s[0];
   double nuSig_f = 0.0;
 };
 
 // Source Function
-auto source = [](auto&& x, auto&& mu){ return 0.0*x + 0.0*mu; };
+auto source = [](auto&& x, auto&& mu){ return 1.0/100 + 0.0*x + 0.0*mu; };
 
 
 int main(){
@@ -54,6 +55,7 @@ int main(){
   std::cout << "----------------------------- \n";
   std::cout << "      Problem Running \n";
   std::cout << "----------------------------- \n";
+  std::cout << "\n";
 
   
   // Setup spatial grids, and compute ordinates
@@ -94,6 +96,13 @@ int main(){
     if( err <= tol || it >= 1e5 ) cond = false;
     it += 1;
   } while(cond);
+
+  // for(auto row : angle_flux_c){
+  //   for( auto ele : row){
+  //     std::cout << ele << " ";
+  //   }
+  //   std::cout << "\n";
+  // }
 
   std::cout << "Number of iterations:  " << it << "\n";
   std::cout << "Final error:       " << std::scientific << err << "\n";

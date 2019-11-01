@@ -1,6 +1,6 @@
 #include "sweeper/cell.hpp"
 
-auto l_sweep = [&](auto&& mat, auto&& a_flux_c, auto&& a_flux_b, auto&& right, auto&& ord,
+auto l_sweep = [](auto&& mat, auto&& a_flux_c, auto&& a_flux_b, auto&& right, auto&& ord,
 		   auto&& grid, auto&& n, auto&& alpha){
 		 for( unsigned int i = 0; i < a_flux_c[0].size(); ++i ){
 		   unsigned int j = a_flux_c[0].size() - i - 1;
@@ -11,7 +11,7 @@ auto l_sweep = [&](auto&& mat, auto&& a_flux_c, auto&& a_flux_b, auto&& right, a
 		 }
 	       };
 
-auto r_sweep = [&](auto&& mat, auto&& a_flux_c, auto&& a_flux_b, auto&& right, auto&& ord,
+auto r_sweep = [](auto&& mat, auto&& a_flux_c, auto&& a_flux_b, auto&& right, auto&& ord,
 		   auto&& grid, auto&& n, auto&& alpha){
 		 for( unsigned int i = 0; i < a_flux_c[0].size(); ++i ){
 		   double dX = grid[i+1] - grid[i];
