@@ -1,6 +1,7 @@
 #ifndef SOLVER_HPP
 #define SOLVER_HPP
 
+#include <stdlib.h>
 #include <iostream>
 #include <fstream>
 #include <vector>

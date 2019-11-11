@@ -1,18 +1,39 @@
-template<typename T>
-std::vector<T> make_cell_centers(unsigned int Nx, T& Xmin, T& Xmax) {
-  std::vector<T> grid(Nx, 0);
-  T delta = (Xmax-Xmin)/Nx;
-  for( unsigned int i=0; i<Nx; ++i ){
-    grid[i] = (static_cast<double>(i)/Nx)*( Xmax - Xmin ) + Xmin + delta/2;
+template<typename T, typename B>
+void makeCellCenters(T&& xCenters, B&& bounds, std::vector<int> cells) {
+  int cell_n = 0;
+  int cell_o = 0;
+  for( int n = 0; n < static_cast<int>(cells.size()); ++n ){ 
+    double delta = (bounds[n+1] - bounds[n])/cells[n];
+    cell_n += cells[n];
+    for( int i = cell_o; i < cell_n; ++i ){
+      xCenters[i] = (static_cast<double>(i-cell_o)/cells[n])*( bounds[n+1] - bounds[n] ) + bounds[n] + delta/2;
+    }
+    cell_o += cells[n];
   }
-  return grid;
 }
 
-template<typename T>
-std::vector<T> make_cell_bounds(unsigned int Nx, T& Xmin, T& Xmax){
-  std::vector<T> grid(Nx+1, 0);
-  for( unsigned int i=0; i<Nx+1; ++i ){
-    grid[i] = (static_cast<double>(i)/Nx)*( Xmax - Xmin ) + Xmin;
+template<typename T, typename B>
+void makeCellBounds(T&& xBounds, B&& bounds, std::vector<int> cells){
+  int cell_n = 0;
+  int cell_o = 0;
+  for( int n = 0; n < static_cast<int>(cells.size()); ++n ){ 
+    cell_n += cells[n];
+    for( int i = cell_o; i < cell_n+1; ++i ){
+      xBounds[i] = (static_cast<double>(i-cell_o)/cells[n])*( bounds[n+1] - bounds[n] ) + bounds[n];
+    }
+    cell_o += cells[n];
   }
-  return grid;
+}
+
+template<typename T, typename B>
+void makeIdVec(T&& idVec, B&& bounds, std::vector<int> cells) {
+  int cell_n = 0;
+  int cell_o = 0;
+  for( int n = 0; n < static_cast<int>(cells.size()); ++n ){ 
+    cell_n += cells[n];
+    for( int i = cell_o; i < cell_n; ++i ){
+      idVec[i] = n;
+    }
+    cell_o += cells[n];
+  }
 }

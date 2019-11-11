@@ -1,101 +1,91 @@
-template<typename O, typename A>
-void make_boundary_l(std::string type, O&& ord, A&& angle_b, double gamma = 1.0){
+template<typename T, typename O>
+void makeBoundaryL(T&& angleBound, O&& ord, int Nx, std::string type, double gamma = 1.0){
   if(type == "isotropic"){
-    isotropic_l(ord, angle_b);
+    isotropicL(angleBound, ord, Nx);
   } else if (type == "beam"){
-    beam_l(ord, angle_b);
+    beamL(angleBound, ord, Nx);
   } else if (type == "vacuum"){
-    vacuum_l(ord, angle_b);
-  } else if (type == "albedo"){
-    albedo_l(ord, angle_b, gamma);
+    vacuumL(angleBound, ord, Nx);
+  // } else if (type == "albedo"){
+  //   albedoL(angleBound, ord, Nx, gamma);
   }
 }
 
-template<typename O, typename A>
-void make_boundary_r(std::string type, O&& ord, A&& angle_b, double gamma = 1.0){
+template<typename T, typename O>
+void makeBoundaryR(T&& angleBound, O&& ord, int Nx, std::string type, double gamma = 1.0){
   if (type == "isotropic") {
-    isotropic_r(ord, angle_b);
+    isotropicR(angleBound, ord, Nx);
   } else if (type == "beam"){
-    beam_r(ord, angle_b);
+    beamR(angleBound, ord, Nx);
   } else if (type == "vacuum"){
-    vacuum_r(ord, angle_b);
-  } else if (type == "albedo"){
-    albedo_r(ord, angle_b, gamma);
+    vacuumR(angleBound, ord, Nx);
+  // } else if (type == "albedo"){
+  //   albedoR(angleBound, ord, Nx, gamma);
   }
 }
 
-template<typename O, typename A>
-void beam_l(O&& ord, A&& angle_b){
-  unsigned int N = ord.size();
-  angle_b[N-1][0] = 1/ord[N-1].value;
+// Left boundary conditions
+template<typename T, typename O>
+void beamL(T&& angleBound, O&& ord, int Nx){
+  angleBound[(Nx+1)*(ord.size()-1)] = 1/ord[ord.size()-1].value;
 }
 
-template<typename O, typename A>
-void isotropic_l(O&& ord, A&& angle_b){
+template<typename T, typename O>
+void isotropicL(T&& angleBound, O&& ord, int Nx){
   double sum = 0.0;
-  for( unsigned int n = static_cast<unsigned int>(ord.size()/2); n < ord.size(); ++n){
+  for( int n = static_cast<int>(ord.size()/2); n < static_cast<int>(ord.size()); ++n){
     sum += ord[n].value * ord[n].weight;
   }
-  for( unsigned int n = 0; n < ord.size(); ++n ){
-    if( n >= static_cast<unsigned int>(ord.size()/2) ){
-      angle_b[n][0] = 1/sum;
-    }
+  for( int n = static_cast<int>(ord.size()/2); n < static_cast<int>(ord.size()); ++n ){
+    angleBound[(Nx+1)*(n)] = 1/sum;
   }
 }
 
-template<typename O, typename A>
-void vacuum_l(O&& ord, A&& angle_b){
-  for( unsigned int n = 0; n < ord.size(); ++n ){
-    if( n >= static_cast<unsigned int>(ord.size()/2) ){
-      angle_b[n][0] = 0.0;
-    }
+template<typename T, typename O>
+void vacuumL(T&& angleBound, O&& ord, int Nx){
+  for( int n = static_cast<int>(ord.size()/2); n < static_cast<int>(ord.size()); ++n ){
+    angleBound[(Nx+1)*(n)] = 0.0;
   }
 }
 
-template<typename O, typename A>
-void albedo_l(O&& ord, A&& angle_b, double gamma){
-  unsigned int Sn = ord.size();
-  for( unsigned int n = 0; n < Sn/2; ++n ){
-    angle_b[Sn - n - 1][0] = gamma*angle_b[n][0];
-  }
+// template<typename T, typename O>
+// void albedoL(T&& angleBound, O&& ord, double gamma){
+//   unsigned int Sn = ord.size();
+//   for( unsigned int n = 0; n < Sn/2; ++n ){
+//     angle_b[Sn - n - 1][0] = gamma*angle_b[n][0];
+//   }
+// }
+
+// Right boundary conditions
+template<typename T, typename O>
+void beamR(T&& angleBound, O&& ord, int Nx){
+  angleBound[(Nx)] = 1/ord[0].value;
 }
 
-template<typename O, typename A>
-void beam_r(O&& ord, A&& angle_b){
-  unsigned int Nx = angle_b[0].size();
-  angle_b[0][Nx-1] = 1/std::abs(ord[0].value);
-}
-
-template<typename O, typename A>
-void isotropic_r(O&& ord, A&& angle_b){
+template<typename T, typename O>
+void isotropicR(T&& angleBound, O&& ord, int Nx){
   double sum = 0.0;
-  for( unsigned int n = static_cast<unsigned int>(ord.size()/2); n < ord.size(); ++n){
+  for( int n = static_cast<int>(ord.size()/2); n < static_cast<int>(ord.size()); ++n){
     sum += ord[n].value * ord[n].weight;
   }
-  unsigned int Nx = angle_b[0].size();
-  for( unsigned int n = 0; n < ord.size(); ++n ){
-    if( n < static_cast<unsigned int>(ord.size()/2) ){
-      angle_b[n][Nx-1] = 1/sum;
-    }
+  for( int n = 0; n < static_cast<int>(ord.size()/2); ++n ){
+    angleBound[n*(Nx+1) + Nx] = 1/sum;
   }
 }
 
-template<typename O, typename A>
-void vacuum_r(O&& ord, A&& angle_b){
-  unsigned int Nx = angle_b[0].size();
-  for( unsigned int n = 0; n < ord.size(); ++n ){
-    if( n < static_cast<unsigned int>(ord.size()/2) ){
-      angle_b[n][Nx-1] = 0.0;
-    }
+template<typename T, typename O>
+void vacuumR(T&& angleBound, O&& ord, int Nx){
+  for( int n = 0; n < static_cast<int>(ord.size()/2); ++n ){
+    angleBound[n*Nx + Nx] = 0.0;
   }
 }
 
-template<typename O, typename A>
-void albedo_r(O&& ord, A&& angle_b, double gamma){
-  unsigned int Nx = angle_b[0].size();
-  unsigned int Sn = ord.size();
-  for( unsigned int n = Sn/2; n < Sn; ++n ){
-    angle_b[Sn - n - 1][Nx-1] = gamma*angle_b[n][Nx-1];
-    angle_b[n][Nx] = (1-gamma)*angle_b[n][Nx-1];
-  }
-}
+// template<typename T, typename O>
+// void albedoR(T&& angleBound, O&& ord, double gamma){
+//   unsigned int Nx = angle_b[0].size();
+//   unsigned int Sn = ord.size();
+//   for( unsigned int n = Sn/2; n < Sn; ++n ){
+//     angle_b[Sn - n - 1][Nx-1] = gamma*angle_b[n][Nx-1];
+//     angle_b[n][Nx] = (1-gamma)*angle_b[n][Nx-1];
+//   }
+// }

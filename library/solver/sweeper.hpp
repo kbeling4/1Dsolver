@@ -1,33 +1,37 @@
 #include "sweeper/cell.hpp"
 
-auto l_sweep = [](auto&& mat, auto&& a_flux_c, auto&& a_flux_b, auto&& right, auto&& ord,
-		   auto&& grid, auto&& n, auto&& alpha){
-		 for( unsigned int i = 0; i < a_flux_c[0].size(); ++i ){
-		   unsigned int j = a_flux_c[0].size() - i - 1;
-		   double dX = grid[j+1] - grid[j];
-		   a_flux_c[n][j] = cell::solve_left(mat, ord[n].value, dX,
-		     				     a_flux_b[n][j+1], right[n][j], alpha);
-		   a_flux_b[n][j] = cell::get_phi_m(a_flux_c[n][j], a_flux_b[n][j+1], alpha);
-		 }
-	       };
+template<typename T, typename O, typename M>
+void LSweep(T&& angleCenter, T&& angleBound, T&& right, O&& ord, M&& mats, T&& xBounds, T&& idVec, int n, int Nx,
+	    double alpha){
+  for( int i = 0; i < Nx; ++i ){
+    unsigned int j = Nx - i - 1;
+    double deltaX = xBounds[j+1] - xBounds[j];
+    angleCenter[n*Nx + j] = cell::solveLeft(angleBound[n*Nx + j + n + 1], right[n*Nx + j], ord[n].value,
+    					    mats[idVec[j]], deltaX, alpha);
+    angleBound[n*Nx + j + n] = cell::getPhiM(angleCenter[n*Nx + j], angleBound[n*Nx + j + n + 1],
+    						 alpha);
+  }
+}
 
-auto r_sweep = [](auto&& mat, auto&& a_flux_c, auto&& a_flux_b, auto&& right, auto&& ord,
-		   auto&& grid, auto&& n, auto&& alpha){
-		 for( unsigned int i = 0; i < a_flux_c[0].size(); ++i ){
-		   double dX = grid[i+1] - grid[i];
-		   a_flux_c[n][i] = cell::solve_right(mat, ord[n].value, dX,
-						      a_flux_b[n][i], right[n][i], alpha);
-		   a_flux_b[n][i+1] = cell::get_phi_p(a_flux_c[n][i], a_flux_b[n][i], alpha);
-		 }
-	       };
+template<typename T, typename O, typename M>
+void RSweep(T&& angleCenter, T&& angleBound, T&& right, O&& ord, M&& mats, T&& xBounds, T&& idVec, int n, int Nx,
+	    double alpha){
+  for( int i = 0; i < Nx; ++i ){
+    double deltaX = xBounds[i+1] - xBounds[i];
+    angleCenter[n*Nx + i] = cell::solveRight(angleBound[n*Nx + i + n], right[n*Nx + i], ord[n].value,
+     					     mats[idVec[i]], deltaX, alpha);
+    angleBound[n*Nx + i + n + 1] = cell::getPhiP(angleCenter[n*Nx +i], angleBound[n*Nx + i + n], alpha);
+  }
+}
 
-template<typename M, typename F, typename R, typename O, typename G>
-void sweep(M&& mat, F&& a_flux_c, F&& a_flux_b, R&& right, O&& ord, G&& grid, double alpha){
-  for( unsigned int n = 0; n < ord.size(); ++n ){
-    if(n < static_cast<unsigned int>(ord.size()/2) ){
-      l_sweep(mat, a_flux_c, a_flux_b, right, ord, grid, n, alpha);
+template<typename T, typename O, typename M>
+void sweep(T&& angleCenter, T&& angleBound, T&& right, O&& ord, M&& mats, T&& xBounds, T&& idVec, int Nx,
+	   double alpha){
+  for( int n = 0; n < static_cast<int>(ord.size()); ++n ){
+    if(n < static_cast<int>(ord.size()/2) ){
+      LSweep(angleCenter, angleBound, right, ord, mats, xBounds, idVec, n, Nx, alpha);
     } else {
-      r_sweep(mat, a_flux_c, a_flux_b, right, ord, grid, n, alpha);
+      RSweep(angleCenter, angleBound, right, ord, mats, xBounds, idVec, n, Nx, alpha);
     }
   }
 }
