@@ -25,8 +25,8 @@ void makeCellBounds(T&& xBounds, B&& bounds, std::vector<int> cells){
   }
 }
 
-template<typename T, typename B>
-void makeIdVec(T&& idVec, B&& bounds, std::vector<int> cells) {
+template<typename T>
+void makeIdVec(T&& idVec, std::vector<int> cells) {
   int cell_n = 0;
   int cell_o = 0;
   for( int n = 0; n < static_cast<int>(cells.size()); ++n ){ 
