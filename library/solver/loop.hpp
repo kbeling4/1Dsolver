@@ -101,7 +101,7 @@ void looper(std::vector<int> cells, std::vector<double> bounds, std::vector<std:
   std::cout << "--------------------------\n";
   std::cout << std::endl;
   if(params[0] == "k-value"){
-    std::cout << "k-value:     " << k[itK] << std::endl;
+    std::cout << "k-value:        " << k[itK] << std::endl;
     std::cout << "k-value Err:    " << errOut[itK-1] << std::endl;
     std::cout << "Total Flux Err: " << errIn[itI-1] << std::endl;
     std::cout << "k-value Itt:    " << itK << std::endl;
