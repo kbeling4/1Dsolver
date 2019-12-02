@@ -15,8 +15,8 @@ double computeScatter(T&& angleCenter, O&& ord, M&& mats, T&& idVec, int Nx, dou
 }
 
 template<typename F>
-double getSource(double xVal, double mu, F&& sourceFunc){
-  return sourceFunc(xVal, mu)/2;
+double getSource(double xVal, F&& sourceFunc){
+  return sourceFunc(xVal)/2;
 }
 
 template<typename T, typename F, typename O, typename M>
@@ -25,7 +25,7 @@ void computeRight(T&& right, T&& angleCenter, T&& fissionS, F&& sourceFunc, O&& 
   for( int n = 0; n < static_cast<int>(ord.size()); ++n ){
     for( int i = 0; i < Nx; ++i ){
       right[n*Nx + i] = computeScatter(angleCenter, ord, mats, idVec, Nx, ord[n].value, i)
-	+ fissionS[i] + getSource(xCenters[i], ord[n].value, sourceFunc);
+	+ fissionS[i] + getSource(xCenters[i], sourceFunc);
     }
   }
 }

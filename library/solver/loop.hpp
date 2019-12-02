@@ -4,7 +4,8 @@
 
 template<typename M, typename F>
 void looper(std::vector<int> cells, std::vector<double> bounds, std::vector<std::string> params, M&& mats,
-	    F&& sourceFunc, double alpha, int Sn, std::vector<double> tol){
+	    F&& sourceFunc, double alpha, int Sn, std::vector<double> tol, bool normalize,
+	    std::vector<bool> pParams){
 
   // Compute number of cells
   int Nx = 0;
@@ -42,9 +43,9 @@ void looper(std::vector<int> cells, std::vector<double> bounds, std::vector<std:
 
   std::vector<double> k{1.0};
   std::vector<double> errOut;
-  double errorIn;
+  std::vector<double> errIn;
   int itK = 0;
-  int it = 0;
+  int itI = 0;
   
   bool condK = true;
   do {
@@ -56,8 +57,7 @@ void looper(std::vector<int> cells, std::vector<double> bounds, std::vector<std:
 
     // Setup inner Loop
     bool cond = true;
-    it = 0;
-    std::vector<double> errIn;
+    int it = 0;
     do {
       // Boundary conditions
       inner::makeBoundaryL(angleBound, ord, Nx, params[1]);
@@ -77,10 +77,10 @@ void looper(std::vector<int> cells, std::vector<double> bounds, std::vector<std:
 
       // compute error
       errIn.push_back(tools::compute_error(scalarP, scalarM, Nx));
-      if( errIn[it] < tol[0] || it >= 1e3 ) {
-	errorIn = errIn[it];
+      if( errIn[itI] < tol[0] || it >= 1e5 ) {
 	cond = false; }
-      it += 1; 
+      it  += 1;
+      itI += 1;
     } while(cond);
     
     if(params[0] == "k-value") {
@@ -101,25 +101,36 @@ void looper(std::vector<int> cells, std::vector<double> bounds, std::vector<std:
   std::cout << "--------------------------\n";
   std::cout << std::endl;
   if(params[0] == "k-value"){
-    std::cout << "k-value: " << k[itK] << std::endl;
-    std::cout << "Outer Err: " << errOut[itK-1] << std::endl;
+    std::cout << "k-value:     " << k[itK] << std::endl;
+    std::cout << "k-value Err:    " << errOut[itK-1] << std::endl;
+    std::cout << "Total Flux Err: " << errIn[itI-1] << std::endl;
+    std::cout << "k-value Itt:    " << itK << std::endl;
+    std::cout << "Total Flux Itt: " << itI << std::endl;
+    std::cout << std::endl;
+  } else {
+    std::cout << "Scalar Flux Err: " << errIn[itI-1] << std::endl;
+    std::cout << "Scalar Flux Itt: " << itI << std::endl;
+    std::cout << std::endl;
   }
-  std::cout << "Inner Err: " << errorIn << std::endl;
-  std::cout << "Inner Itt: " << it << std::endl;
-  std::cout << std::endl;
+  
   std::cout << "--------------------------\n";
   std::cout << "---- Particle Balance ----\n";
   std::cout << "--------------------------\n";
   std::cout << std::endl;
-  // Print results to file
-  tools::printX(xCenters, Nx);
-  tools::printScalar(scalarP, Nx, "scalar.txt");
-
+  
   // Particle Balance
-  double bal = tools::getBalance(angleBound, scalarP, sourceFunc, ord, mats, idVec, xBounds, Nx);
-  std::cout << bal << std::endl;
+  double bal = tools::getBalance(angleBound, scalarP, sourceFunc, ord, mats, idVec, xBounds, k[itK], Nx);
+  std::cout << "total bal   :  " << bal << std::endl;
   std::cout << std::endl;
   std::cout << "--------------------------\n";
+
+  // Normalize Scalar Flux
+  if (normalize){
+    tools::getNormal(scalarP, Nx);
+  }
+
+  // Print Results to File
+  tools::printer(pParams, scalarP, xCenters, errIn, errOut, k, Nx);
   
   // Free all heap allocations
   free(xCenters);

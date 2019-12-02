@@ -5,5 +5,6 @@ namespace tools{
 #include "tools/grid.hpp"
 #include "tools/ordinates.hpp"
 #include "tools/print.hpp"
+#include "tools/normalize.hpp"
   
 }

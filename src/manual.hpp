@@ -40,6 +40,17 @@ BOUNDARY_R: right boundary condition, availible options:
 	3) vacuum
 	4) albedo (must provide a gamma value)
 
+NORMALIZE_SCALAR: this function normalizes the final scalar
+        flux to one.
+
+PRINTER: prints selected results to output files. If paramter 
+        exists and is set to true, an output file will be 
+	generated. Options are
+        1) If true, scalar flux is printed
+	2) If true, inner loop error is printed
+	3) If true, k-value vector is printed
+	4) If true, k-value error is printed
+
 // -------------------- Source Function -------------------- //
 SOURCE_FUNCTION:  input  source function, should be modified to 
         match  desired  input. Note, both x and mu must be used 
@@ -58,6 +69,19 @@ solver::Material mat(sigT, sigS, nuSigF): creates a material
   
 std::vector<solver::Material> mats{mat1, mat2, ...}: vector 
         containing the materials for each region of the problem
+
+// ----------------------- Plotter ------------------------ //
+The output data that is printed to files can be plotted using 
+python in the python directory by running the plotter.py file,
+or simply running the command
+
+     python plotter.py
+
+into the terminal while in the python directory. The only 
+requirements for this python script to work are that your 
+machine has the following python packages:
+     1) numpy 
+     2) matplotlib
 */
 ///////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////
