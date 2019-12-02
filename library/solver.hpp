@@ -1,6 +1,7 @@
 #ifndef SOLVER_HPP
 #define SOLVER_HPP
 
+#include <stdlib.h>
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -8,18 +9,13 @@
 #include <algorithm>
 #include <type_traits>
 #include <string>
+#include <array>
 
 namespace solver{
 
-#include "solver/grid.hpp"
-#include "solver/ordinates.hpp"
-#include "solver/sweeper.hpp"
-#include "solver/source.hpp"
-#include "solver/boundary.hpp"
-#include "solver/print.hpp"
-#include "solver/flux.hpp"
-#include "solver/error.hpp"
-#include "solver/balance.hpp"
+#include "solver/loop.hpp"
+#include "solver/material.hpp"  
+#include "solver/errors.hpp"
   
 }
 
